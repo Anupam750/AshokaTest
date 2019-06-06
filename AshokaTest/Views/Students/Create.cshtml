@@ -1,0 +1,155 @@
+﻿@model AshokaTest.ViewModel.StudentViewModel
+
+@{
+    ViewBag.Title = "Register Student";
+}
+
+<h2>Register Student</h2>
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Student</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.StudentName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.StudentName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.StudentName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.StudentEmail, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.StudentEmail, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.StudentEmail, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.StudentPassword, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.StudentPassword, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.StudentPassword, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Rule, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.Rule, Model.RulesList, "-- Select Category --", new { htmlAttributes = new { @class = "form-control CategoryDropdown" } })
+                @Html.ValidationMessageFor(model => model.Rule, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CoursesID, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div id="CoursesList" class="col-md-10">
+                @Html.HiddenFor(model => model.CoursesID, "");
+                @Html.ValidationMessageFor(model => model.CoursesID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="button" value="Register" onclick="ValidateForm();"  class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#Rule").change(function () {
+            var Category = $("#Rule").val();
+            if (Category == "") {
+                Category = "N/A";
+            }
+            var CategoryParam = {
+                "Category": Category
+            }; 
+            console.log(CategoryParam);
+          
+            $.ajax({
+                url: "/Students/GetCourses",
+                data: CategoryParam, 
+                success: function (data) {
+                    $('#CoursesList').html(data);
+                }
+            });
+
+
+        });
+    }
+    );
+
+    function ValidateForm(obj) {
+        var CheckedItems = $('input[type="checkbox"]:checked').length;
+        var minCourse = $("#Min").val();
+        var maxCourse = $("#Max").val();
+
+        if (minCourse == maxCourse) {
+            if (CheckedItems > maxCourse) {
+                $(obj).prop('checked', false); // Unchecks it
+                alert("sorry, You can choose up to " + maxCourse + "");
+            }
+            else {
+                if (minCourse > CheckedItems) {
+                    // $(obj).prop('checked', false); // Unchecks it
+                    // alert("sorry, You need choose atleast " + minCourse + "");
+                }
+            }
+        }
+        else {
+
+            if (CheckedItems > maxCourse) {
+                $(obj).prop('checked', false); // Unchecks it
+                alert("sorry, You can choose up to " + maxCourse + "");
+            }
+            if (CheckedItems < minCourse) {
+                $(obj).prop('checked', false); // Unchecks it
+                alert("sorry, You need choose atleast " + minCourse + "");
+            }
+        }
+
+        var abc = ""
+        //Iterating the collection of checkboxes which checked marked
+        $('input[type=checkbox]').each(function () {
+            if (this.checked) {
+                abc = abc + $(this).val() + ","
+                //assign set value to hidden field
+                $('#CourseIDs').val(abc);
+                $('#CoursesID').val(abc);
+            }
+        });
+
+
+        if ($('#CourseIDs').val() != "") {
+            $("form").submit();
+        }
+        else {
+            //form is not valid, show alert something...
+            alert('not valid');
+            return false;
+        }
+
+    }
+
+    
+</script>
+
