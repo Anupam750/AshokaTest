@@ -23,6 +23,7 @@ namespace AshokaTest.Database
         public string Category { get; set; }
         public int Min { get; set; }
         public int Max { get; set; }
+        public Nullable<int> Capicity { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Cours> Courses { get; set; }

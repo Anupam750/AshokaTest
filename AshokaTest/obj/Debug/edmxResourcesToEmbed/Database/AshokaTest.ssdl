@@ -17,6 +17,7 @@
     <Property Name="Category" Type="nvarchar" MaxLength="10" Nullable="false" />
     <Property Name="Min" Type="int" Nullable="false" />
     <Property Name="Max" Type="int" Nullable="false" />
+    <Property Name="Capicity" Type="int" />
   </EntityType>
   <EntityType Name="Student">
     <Key>

@@ -39,11 +39,12 @@ namespace AshokaTest.ViewModel
         public List<SelectListItem> StatusItems { get; set; } = new List<SelectListItem>();
         public string Status { get; set; }
 
-
-
         public List<SelectListItem> RulesList { get; set; } = new List<SelectListItem>();
+        [Required(ErrorMessage = "Category is required")]
+        [Display(Name = "Category")]
         public string Rule { get; set; }
 
+        public RuleViewModel RuleDetails { get; set; } = new RuleViewModel();
 
         public bool IsActive { get; set; }
 
@@ -51,6 +52,11 @@ namespace AshokaTest.ViewModel
         //[Required(ErrorMessage = "Course is required")]
         public string[] CoursesID { get; set; }
         public List<CourseViewModel> CoursesList { get; set; } = new List<CourseViewModel>();
+
+
+        public string[] SelectedCoursesID { get; set; }
+        public List<CourseViewModel> SelectedCoursesList { get; set; } = new List<CourseViewModel>();
+
 
         public StudentViewModel()
         {

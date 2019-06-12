@@ -4,9 +4,9 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="4b27ff43e4d74a1b9170a863495c7b73" Name="Diagram1">
+      <Diagram DiagramId="b218b191e4fe4a10bac9a0ac7fe7383e" Name="Diagram1">
         <EntityTypeShape EntityType="AshokaTestModel.Cours" Width="1.5" PointX="3" PointY="0.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="AshokaTestModel.Rule" Width="1.5" PointX="0.75" PointY="1.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="AshokaTestModel.Rule" Width="1.5" PointX="0.75" PointY="1" IsExpanded="true" />
         <EntityTypeShape EntityType="AshokaTestModel.Student" Width="1.5" PointX="0.75" PointY="4.75" IsExpanded="true" />
         <EntityTypeShape EntityType="AshokaTestModel.StudentCourseMapping" Width="1.5" PointX="2.75" PointY="4.75" IsExpanded="true" />
         <AssociationConnector Association="AshokaTestModel.FK__Courses__Categor__4BAC3F29" ManuallyRouted="false" />

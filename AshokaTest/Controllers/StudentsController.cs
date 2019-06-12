@@ -43,6 +43,7 @@ namespace AshokaTest.Controllers
         }
 
         // GET: Students/Create
+        [HttpGet]
         public ActionResult Create()
         {
             StudentViewModel student = new StudentViewModel();
@@ -59,7 +60,7 @@ namespace AshokaTest.Controllers
 
             if (!string.IsNullOrEmpty(student.StudentEmail))
             {
-                var isEmailExist = studentRepository.IsEmailExist(student.StudentEmail);
+                var isEmailExist = studentRepository.IsEmailExist(student.StudentEmail,0);
                 if (isEmailExist)
                 {
                     ModelState.AddModelError("StudentEmail", "Email already exist, Please choose another one.");
@@ -77,14 +78,14 @@ namespace AshokaTest.Controllers
                 string CourseIDs = Convert.ToString(form["CourseIDs"]).TrimEnd(',');
                 student.CoursesID = CourseIDs.Split(',');
                 StudentRepository studentRepository = new StudentRepository();
-                studentRepository.SaveStudent(student);
-
-                return RedirectToAction("Index");
+               int StudentID= studentRepository.SaveStudent(student);
+                return RedirectToAction("ReviewDetails", "ReviewStudent", new { ID = StudentID });
             }
             return View(student);
         }
 
         // GET: Students/Edit/5
+        [HttpGet]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -94,7 +95,6 @@ namespace AshokaTest.Controllers
             StudentViewModel student = new StudentViewModel();
             StudentViewModel studentRecord = studentRepository.GetStudentData(id);
             studentRecord.RulesList = student.RulesList;
-            studentRecord.CoursesList = student.CoursesList;
             studentRecord.StatusItems = student.StatusItems;
             if (student == null)
             {
@@ -108,15 +108,58 @@ namespace AshokaTest.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "StudentID,StudentName,StudentEmail,StudentPassword,Status,IsActive")] Student student)
+        public ActionResult Edit(FormCollection form, StudentViewModel student)
         {
+            StudentViewModel studentRecord = new StudentViewModel();
+            if (!string.IsNullOrEmpty(student.StudentEmail))
+            {
+                var isEmailExist = studentRepository.IsEmailExist(student.StudentEmail, student.StudentID);
+                if (isEmailExist)
+                {
+                    ModelState.AddModelError("StudentEmail", "Email already exist, Please choose another one.");
+                }
+            }
+
+            if (string.IsNullOrEmpty(Convert.ToString(form["CourseIDs"])))
+            {
+                if (string.IsNullOrEmpty(Convert.ToString(form["CoursesID"])))
+                {
+                    ModelState.AddModelError("CoursesID", "Please select courses....");
+                }
+            }
+
             if (ModelState.IsValid)
             {
-                db.Entry(student).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                string CourseIDs = "";
+                if (string.IsNullOrEmpty(Convert.ToString(form["CourseIDs"])))
+                {
+                    if (!string.IsNullOrEmpty(Convert.ToString(form["CoursesID"])))
+                    {
+                        CourseIDs = Convert.ToString(form["CoursesID"]).TrimEnd(',');
+                    }
+                }
+                else
+                {
+                     CourseIDs = Convert.ToString(form["CourseIDs"]).TrimEnd(',');
+                }
+              
+                student.CoursesID = CourseIDs.Split(',');
+                StudentRepository studentRepository = new StudentRepository();
+                int StudentID = studentRepository.SaveStudent(student);
+                return RedirectToAction("ReviewDetails", "ReviewStudent", new { ID = StudentID });
             }
-            return View(student);
+            else
+            {
+                StudentViewModel _student = new StudentViewModel();
+                studentRecord = studentRepository.GetStudentData(student.StudentID);
+                studentRecord.RulesList = _student.RulesList;
+                studentRecord.StatusItems = _student.StatusItems;
+                if (student == null)
+                {
+                    return HttpNotFound();
+                }
+            }
+            return View(studentRecord);
         }
 
         // GET: Students/Delete/5
@@ -134,10 +177,6 @@ namespace AshokaTest.Controllers
             return View(student);
         }
 
-      
-
-
-
 
         // POST: Students/Delete/5
         [HttpPost, ActionName("Delete")]
@@ -147,19 +186,34 @@ namespace AshokaTest.Controllers
             Student student = db.Students.Find(id);
             db.Students.Remove(student);
             db.SaveChanges();
+
+            List<StudentCourseMapping> StudentCourseMappings = (from co in db.StudentCourseMappings where co.StudentID == id select co).ToList();
+            db.StudentCourseMappings.RemoveRange(StudentCourseMappings);
+            db.SaveChanges();
+          
             return RedirectToAction("Index");
         }
 
 
-        public ActionResult GetCourses(string Category)
+        public ActionResult GetCourses(string Category, int ? StudentID)
         {
             if (string.IsNullOrEmpty(Category))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            //get Courses list
             CoursesRepository coursesRepository = new CoursesRepository();
-            CourseRuleViewModel Courses = coursesRepository.GetCourseByCategory(Category);
+            CourseRuleViewModel Courses = new CourseRuleViewModel();
+            if (StudentID==null)
+            {
+                //Create Request
+                //get Courses list
+                 Courses = coursesRepository.GetCourseByCategory(Category);
+            }
+            else
+            {
+                Courses = coursesRepository.GetCourseByCategory(Category, Convert.ToInt32(StudentID));
+            }
+           
             if (Request.IsAjaxRequest())
             {
                 return PartialView("/Views/Students/_PartialCourseList.cshtml", Courses);

@@ -12,6 +12,7 @@ namespace AshokaTest.ViewModel
         public string CousreCode { get; set; }
         public string CourseName { get; set; }
         public int Capicity { get; set; }
+        public bool IsSelected { get; set; } 
         public RuleViewModel Rules { get; set; }
     }
 }

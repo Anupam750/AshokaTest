@@ -22,6 +22,7 @@
           <Property Name="Category" Type="nvarchar" MaxLength="10" Nullable="false" />
           <Property Name="Min" Type="int" Nullable="false" />
           <Property Name="Max" Type="int" Nullable="false" />
+          <Property Name="Capicity" Type="int" />
         </EntityType>
         <EntityType Name="Student">
           <Key>
@@ -87,6 +88,7 @@
           <Property Name="Category" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Min" Type="Int32" Nullable="false" />
           <Property Name="Max" Type="Int32" Nullable="false" />
+          <Property Name="Capicity" Type="Int32" />
           <NavigationProperty Name="Courses" Relationship="Self.FK__Courses__Categor__4BAC3F29" FromRole="Rules" ToRole="Courses" />
         </EntityType>
         <EntityType Name="Student">
@@ -153,6 +155,7 @@
                 <ScalarProperty Name="Category" ColumnName="Category" />
                 <ScalarProperty Name="Min" ColumnName="Min" />
                 <ScalarProperty Name="Max" ColumnName="Max" />
+                <ScalarProperty Name="Capicity" ColumnName="Capicity" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

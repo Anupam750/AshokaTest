@@ -6,67 +6,93 @@
 
 <h2>Edit</h2>
 <script src="~/Scripts/jquery-3.3.1.js"></script>
-
+<script src="~/Scripts/CommanJS/CommanPartial.js"></script>
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
 
-    <div class="form-horizontal">
-        <h4>Student</h4>
-        <hr />
+<div class="form-horizontal">
+    <h4>Student</h4>
+    <hr />
 
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.StudentID)
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.StudentName, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.StudentName, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.StudentName, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.StudentEmail, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.StudentEmail, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.StudentEmail, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.StudentPassword, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.StudentPassword, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.StudentPassword, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Rule, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownListFor(model => model.Rule, Model.RulesList, "-- Select Category --", new { htmlAttributes = new { @class = "form-control CategoryDropdown" } })
-                @Html.ValidationMessageFor(model => model.Rule, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.CoursesID, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div id="CoursesList" class="col-md-10">
-                @Html.HiddenFor(model => model.CoursesID, "");
-                @Html.ValidationMessageFor(model => model.CoursesID, "", new { @class = "text-danger" })
-            </div>
-        </div>
-       
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="button" value="Save"  onclick="ValidateEditForm();"  class="btn btn-default" />
-            </div>
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.StudentID)
+    @Html.Hidden("MinEdit", Model.RuleDetails.Min)
+    @Html.Hidden("MaxEdit", Model.RuleDetails.Max)
+    <div class="form-group">
+        @Html.LabelFor(model => model.StudentName, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.StudentName, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.StudentName, "", new { @class = "text-danger" })
         </div>
     </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.StudentEmail, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.StudentEmail, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.StudentEmail, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.StudentPassword, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.StudentPassword, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.StudentPassword, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Rule, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(model => model.Rule, Model.RulesList, "-- Select Category --", new { htmlAttributes = new { @class = "form-control CategoryDropdown" } })
+            @Html.ValidationMessageFor(model => model.Rule, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.CoursesID, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10 CoursesList">
+
+            @foreach (var course in Model.CoursesList)
+            {
+                <div style="padding-right:15px;margin-left:200px">
+
+                    @if (course.IsSelected)
+                    {
+                        <input id="@course.CousreCode" type="checkbox" checked="checked" onchange="ValidateRules(this);" name="courses" value="@course.CousreCode" />
+                        <label for="@course.CousreCode">
+                            @course.CourseName
+                        </label>
+                    }
+                    else
+                    {
+                        <input id="@course.CousreCode" type="checkbox" onchange="ValidateRules(this);" name="courses" value="@course.CousreCode" />
+                        <label for="@course.CousreCode">
+                            @course.CourseName
+                        </label>
+                    }
+
+                </div>
+            }
+
+            @Html.HiddenFor(model => model.CoursesID, "");
+            @Html.ValidationMessageFor(model => model.CoursesID, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="col-md-10">
+            <label id="lblCourseMessage" class="text-danger"></label>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="button" value="Update" onclick="ValidateEditForm();" class="btn btn-default" />
+        </div>
+    </div>
+</div>
 }
 
 <div>
@@ -77,13 +103,24 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
+
         $("#Rule").change(function () {
+            $(".CoursesList").empty();
+
             var Category = $("#Rule").val();
             if (Category == "") {
                 Category = "N/A";
             }
+
+            var StudentID = $("#StudentID").val();
+            if (StudentID == "") {
+                alert("StudentID is not on form");
+                return;
+            }
+
             var CategoryParam = {
-                "Category": Category
+                "Category": Category,
+                "StudentID": StudentID
             };
             console.log(CategoryParam);
 
@@ -91,7 +128,7 @@
                 url: "/Students/GetCourses",
                 data: CategoryParam,
                 success: function (data) {
-                    $('#CoursesList').html(data);
+                    $('.CoursesList').html(data);
                 }
             });
         });
@@ -102,6 +139,14 @@
         var CheckedItems = $('input[type="checkbox"]:checked').length;
         var minCourse = $("#Min").val();
         var maxCourse = $("#Max").val();
+
+        if (minCourse == undefined) {
+             minCourse = $("#MinEdit").val();
+        }
+
+        if (maxCourse == undefined) {
+            maxCourse = $("#MaxEdit").val();
+        }
 
         if (minCourse == maxCourse) {
             if (CheckedItems > maxCourse) {
@@ -138,19 +183,19 @@
             }
         });
 
-
-        if ($('#CourseIDs').val() != "") {
+        var courseID = $('#CourseIDs').val();
+        if (courseID == undefined) {
+            courseID = $('#CoursesID').val();
+        }
+        if (courseID != "") {
             $("form").submit();
         }
         else {
             //form is not valid, show alert something...
-            alert('not valid');
+          //  alert('not valid');
+            $('#lblCourseMessage').text("Please select any of course");
             return false;
         }
-
     }
 
-
 </script>
-
-

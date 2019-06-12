@@ -9,5 +9,6 @@ namespace AshokaTest.ViewModel
     {
         public RuleViewModel Rule { get; set; }
         public List<CourseViewModel> CourseList { get; set; }
+        public List<CourseViewModel> SelectedCourseList { get; set; }
     }
 }

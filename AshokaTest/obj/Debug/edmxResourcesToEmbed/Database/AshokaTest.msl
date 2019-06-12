@@ -18,6 +18,7 @@
           <ScalarProperty Name="Category" ColumnName="Category" />
           <ScalarProperty Name="Min" ColumnName="Min" />
           <ScalarProperty Name="Max" ColumnName="Max" />
+          <ScalarProperty Name="Capicity" ColumnName="Capicity" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

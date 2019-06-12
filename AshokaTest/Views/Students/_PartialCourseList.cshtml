@@ -3,20 +3,32 @@
 
 @if (Model.CourseList != null && Model.CourseList.Count > 0)
 {
-
     @Html.Hidden("CourseIDs", "");
     @Html.Hidden("Min", Model.Rule.Min);
     @Html.Hidden("Max", Model.Rule.Max);
+    <div class="CoursesList">
+        @foreach (var course in Model.CourseList)
+        {
+            <div style="padding-right:15px;margin-left:200px">
 
-    foreach (var course in Model.CourseList)
-    {
-        <div style="padding-right:15px;margin-left:200px">
-            <input id="@course.CousreCode" type="checkbox" onchange="ValidateRules(this);" name="courses" value="@course.CousreCode" />
-            <label for="@course.CousreCode">
-                @course.CourseName
-            </label>
-        </div>
-    }
+                @if (course.IsSelected)
+                {
+                    <input id="@course.CousreCode" type="checkbox" checked="checked" onchange="ValidateRules(this);" name="courses" value="@course.CousreCode" />
+                    <label for="@course.CousreCode">
+                        @course.CourseName
+                    </label>
+                }
+                else
+                {
+                    <input id="@course.CousreCode" type="checkbox" onchange="ValidateRules(this);" name="courses" value="@course.CousreCode" />
+                    <label for="@course.CousreCode">
+                        @course.CourseName
+                    </label>
+                }
+            </div>
+        }
+
+    </div>
 }
 else
 {
@@ -26,49 +38,4 @@ else
         </label>
     </div>
 }
-
-<script type="text/javascript">
-
-    function ValidateRules(obj) {
-        var CheckedItems = $('input[type="checkbox"]:checked').length;
-        var minCourse = $("#Min").val();
-        var maxCourse = $("#Max").val();
-
-        if (minCourse == maxCourse) {
-            if (CheckedItems > maxCourse) {
-                $(obj).prop('checked', false); // Unchecks it
-                alert("sorry, You can choose up to " + maxCourse + "");
-            }
-            else {
-                if (minCourse > CheckedItems) {
-                   // $(obj).prop('checked', false); // Unchecks it
-                   // alert("sorry, You need choose atleast " + minCourse + "");
-                }
-            }
-        }
-        else {
-
-            if (CheckedItems > maxCourse) {
-                $(obj).prop('checked', false); // Unchecks it
-                alert("sorry, You can choose up to " + maxCourse + "");
-            }
-            if (CheckedItems < minCourse) {
-                $(obj).prop('checked', false); // Unchecks it
-                alert("sorry, You need choose atleast " + minCourse + "");
-            }
-        }
-        
-        var abc = ""
-        //Iterating the collection of checkboxes which checked marked
-        $('input[type=checkbox]').each(function () {
-            if (this.checked) {
-                abc = abc + $(this).val() + ","
-                //assign set value to hidden field
-                $('#CourseIDs').val(abc);
-                $('#CoursesID').val(abc);
-            }
-        });
-    }
-
-</script>
-
+<script src="~/Scripts/CommanJS/CommanPartial.js"></script>
